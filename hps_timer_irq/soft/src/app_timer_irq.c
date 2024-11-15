@@ -26,13 +26,29 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "axi_lw.h"
+#include "exceptions.h"
+#include "pio_function.h"
 
 int __auto_semihosting;
 
 int main(void){
 
     printf("Laboratoire: Timer IRQ \n");
+
+    // Test de la constante
+    printf("constanteID: 0x%X\n", (unsigned int)AXI_LW_REG(0));
+
+    // Initialisation des PIO
+    Leds_init();
+    Keys_init();
+    Switchs_init();
+    Segs7_init();
+
+    // Configure the timer
+    config_GIC();
+
+    // Configure IOs
     
-    // TO BE COMPLETE
+    while(1);
 
 }

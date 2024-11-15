@@ -7,31 +7,40 @@
  * Reconfigurable Embedded Digital Systems
  *****************************************************************************************
  *
- * File                 : axi_lw.h
- * Author               : Anthony Convers
- * Date                 : 27.07.2022
+ * File                 : exceptions.h
+ * Author               : Urs Behrmann
+ * Date                 : 15.11.2024
  *
  * Context              : ARE lab
  *
  *****************************************************************************************
- * Brief: Header file for bus AXI lightweight HPS to FPGA defines definition
+ * Brief: 
  *
  *****************************************************************************************
  * Modifications :
  * Ver    Date        Student      Comments
- * 0.0    27.07.2022  ACS           Initial version.
- * 0.1    15.11.2024  UBN           Added ndef and PIO defines
+ * 0.0    15.11.2024  UBN          Initial version.
  *
 *****************************************************************************************/
-#ifndef AXI_LW_H
-#define AXI_LW_H
+
+#ifndef EXCEPTIONS_H
+#define EXCEPTIONS_H
 
 #include <stdint.h>
 
-// Base address
-#define AXI_LW_HPS_FPGA_BASE_ADD   0xFF200000
+// Function prototypes for exception handlers
+void __cs3_isr_irq(void) __attribute__((interrupt));
+void __cs3_reset(void) __attribute__((interrupt));
+void __cs3_isr_undef(void) __attribute__((interrupt));
+void __cs3_isr_swi(void) __attribute__((interrupt));
+void __cs3_isr_pabort(void) __attribute__((interrupt));
+void __cs3_isr_dabort(void) __attribute__((interrupt));
+void __cs3_isr_fiq(void) __attribute__((interrupt));
 
-// ACCESS MACROS
-#define AXI_LW_REG(_x_)   *(volatile uint32_t *)(AXI_LW_HPS_FPGA_BASE_ADD + _x_) // _x_ is an offset with respect to the base address
+// Function prototypes for initializing and configuring exceptions
+void set_A9_IRQ_stack(void);
+void enable_A9_interrupts(void);
+void config_GIC(void);
+void config_interrupt(int N, int CPU_target);
 
-#endif // AXI_LW_H
+#endif // EXCEPTIONS_H
