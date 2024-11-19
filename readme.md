@@ -26,6 +26,8 @@ python3 upld_hps.py -a=../../soft/proj/Labo_4/Debug/Labo_4.axf
 
 ```
 
+-Wl,--defsym -Wl,arm_program_mem=0x40 -Wl,--defsym -Wl,arm_available_mem_size=0x3fffffb8 -Wl,--defsym -Wl,__cs3_stack=0x3ffffff8 -Wl,--section-start -Wl,.vectors=0x0
+
 
 # Analyse
 
@@ -83,27 +85,27 @@ timer_osc1_1_IRQ This interrupt combines: TIMINT1 and TIMINT2.
 
 ## Démarrage
 
-- [ ] Eteindre les 10 LEDs
-- [ ] Hex0, Hex1, Hex2, Hex3 affiche 0
-- [ ] Afficher l'ID 32 bits en hexadécimal dans la console
-- [ ] Minuteur est arrêté
+- [x] Eteindre les 10 LEDs
+- [x] Hex0, Hex1, Hex2, Hex3 affiche 0
+- [x] Afficher l'ID 32 bits en hexadécimal dans la console
+- [x] Minuteur est arrêté
 
 ## Pression sur KEY0
 
-- [ ] Démarre le minuteur
+- [x] Démarre le minuteur
 
 ## Pression sur KEY1
 
-- [ ] Arrête le minuteur
+- [x] Arrête le minuteur
 
 ## Pression sur KEY2
 
-- [ ] Charge la valeur des switches comme valeur de départ
-- [ ] Affiche la valeur sur les afficheurs hexadécimaux
-  - [ ] Hex0 affiche le dixième de seconde
+- [x] Charge la valeur des switches comme valeur de départ
+- [x] Affiche la valeur sur les afficheurs hexadécimaux
+  - [x] Hex0 affiche le dixième de seconde
 
 ## Conditions
 
 - [ ] chaque 100ms l'affichage est mis à jour
-- [ ] L'état de la LED8 montre si le minuteur est actif ou non
+- [x] L'état de la LED8 montre si le minuteur est actif ou non
 - [ ] Chaque 100ms, la LED9 est inversée

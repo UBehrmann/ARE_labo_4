@@ -21,7 +21,7 @@
  * Ver    Date        Student      Comments
  * 0.0    27.07.2022  ACS           Initial version.
  * 1.0    11.10.24    Urs Behrmann
-*****************************************************************************************/
+ *****************************************************************************************/
 
 #ifndef PIO_FUNCTION_H
 #define PIO_FUNCTION_H
@@ -31,42 +31,42 @@
 #include "axi_lw.h"
 
 // Base address
-#define PIO_CORE0_BASE_ADD         0xff200100
-#define PIO_CORE1_BASE_ADD         0xff200120
+#define PIO_CORE0_BASE_ADD 0xff200100
+#define PIO_CORE1_BASE_ADD 0xff200120
 
 // ACCESS MACROS
-#define PIO0_REG(_x_)   *(volatile uint32_t *)(PIO_CORE0_BASE_ADD + _x_) // _x_ is an offset with respect to the base address
-#define PIO1_REG(_x_)   *(volatile uint32_t *)(PIO_CORE1_BASE_ADD + _x_)
+#define PIO0_REG(_x_) *(volatile uint32_t *)(PIO_CORE0_BASE_ADD + _x_) // _x_ is an offset with respect to the base address
+#define PIO1_REG(_x_) *(volatile uint32_t *)(PIO_CORE1_BASE_ADD + _x_)
 
 // PIO Registers
-#define REG_BASE        0x000000
-#define REG_DIR         0x000004
-#define REG_INTERRUPT   0x000008
-#define REG_EDGE        0x00000C
-#define REG_OUTSET      0x000010
-#define REG_OUTCLEAR    0x000014
+#define REG_BASE 0x000000
+#define REG_DIR 0x000004
+#define REG_INTERRUPT 0x000008
+#define REG_EDGE 0x00000C
+#define REG_OUTSET 0x000010
+#define REG_OUTCLEAR 0x000014
 
 // Define PIO bits usage
 
 // PIO0
-#define KEYS_BITS       0x00F00000
-#define SWITCHS_BITS    0x000FFC00
-#define LEDS_BITS       0x000003FF
+#define KEYS_BITS 0x00F00000
+#define LEDS_BITS 0x000FFC00
+#define SWITCHS_BITS 0x000003FF
 
-#define SWITCHS_OFFSET  20
-#define SWITCHS_OFFSET  10
-#define LEDS_OFFSET     0
+#define KEYS_OFFSET 20
+#define SWITCHS_OFFSET 0
+#define LEDS_OFFSET 10
 
 // PIO1
-#define HEX0_BITS       0x0000007F
-#define HEX1_BITS       0x00003F80
-#define HEX2_BITS       0x001FC000
-#define HEX3_BITS       0x0FE00000
+#define HEX0_BITS 0x0000007F
+#define HEX1_BITS 0x00003F80
+#define HEX2_BITS 0x001FC000
+#define HEX3_BITS 0x0FE00000
 
-#define HEX0_OFFSET		0
-#define HEX1_OFFSET     7
-#define HEX2_OFFSET     14
-#define HEX3_OFFSET     21
+#define HEX0_OFFSET 0
+#define HEX1_OFFSET 7
+#define HEX2_OFFSET 14
+#define HEX3_OFFSET 21
 
 //***************************//
 //****** Init function ******//

@@ -24,43 +24,61 @@
  * 0.0    27.10.2022  ACS           Initial version.
  *
  *****************************************************************************************/
+#include "exceptions.h"
+
 #include <stdint.h>
+#include <stdio.h>
 
 #include "address_map_arm.h"
 #include "axi_lw.h"
 #include "int_defines.h"
+#include "app_timer_irq.h"
+#include "pio_function.h"
+
 /* This file:
  * 1. defines exception vectors for the A9 processor
  * 2. provides code that sets the IRQ mode stack, and that dis/enables interrupts
  * 3. provides code that initializes the generic interrupt controller
  */
-void hps_timer_ISR(void);
+
+static uint32_t ticks = 0;
+
+// Define ticks for 100ms with 25MHz clock
+#define Ticks_100ms 2500000
+
+void hps_timer_ISR(void)
+{
+	static int lastLEDISR = 0;
+
+	ticks++;
+
+	if (ticks == Ticks_100ms)
+	{
+
+		lastLEDISR ^= (1 << 7);
+
+		Leds_write(lastLEDISR);
+
+		ticks = 0;
+
+		go = 1;
+	}
+}
 
 // Define the IRQ exception handler
 void __attribute__((interrupt)) __cs3_isr_irq(void)
 {
-	/***********
-	 * TO DO
-	 **********/
-
 	// Read CPU Interface registers to determine which peripheral has caused an interrupt
+	int interrupt_ID = *((int *)0xFFFEC10C) & 0x3FF;
 
 	// Handle the interrupt if it comes from the timer
-
-	// Clear interrupt from the CPU Interface
-
-	// Read the ICCIAR from the CPU Interface in the GIC
-	int interrupt_ID = *((int *)0xFFFEC10C);
-
 	if (interrupt_ID == 201)
-		// Toggle the first LED at 0x400
-		PIO0_REG(REG_BASE) ^= 0x400;
-	else
-		while (1)
-			;
+	{
+		hps_timer_ISR();
+	}
 
-	// Write to the End of Interrupt Register (ICCEOIR)
-	*((int *)0xFFFEC110) = interrupt_ID;
+	// Clear interrupt from the CPU Interface bits 9-0
+	*((int *)0xFFFEC110) = interrupt_ID & 0x3FF;
 }
 
 // Define the remaining exception handlers
@@ -118,6 +136,12 @@ void set_A9_IRQ_stack(void)
 	asm("msr cpsr, %[ps]" : : [ps] "r"(mode));
 }
 
+void disable_A9_interrupts(void)
+{
+	uint32_t status = SVC_MODE | INT_DISABLE;
+	asm("msr cpsr, %[ps]" : : [ps] "r"(status));
+}
+
 /*
  * Turn on interrupts in the ARM processor
  */
@@ -136,7 +160,7 @@ void config_GIC(void)
 
 	// Set Interrupt Priority Mask Register (ICCPMR). Enable interrupts of all
 	// priorities
-	*((int *)0xFFFEC104) = 0xFFFF;
+	*((int *)0xFFFEC104) = 0xFF;
 
 	// Set CPU Interface Control Register (ICCICR). Enable signaling of
 	// interrupts

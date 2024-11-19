@@ -23,28 +23,12 @@
  *
 *****************************************************************************************/
 
-#ifndef EXCEPTIONS_H
-#define EXCEPTIONS_H
+#ifndef APP_TIMER_IRQ_H
+#define APP_TIMER_IRQ_H
 
 #include <stdint.h>
 #include <stdbool.h>
 
-static bool go = 0;
-
-// Function prototypes for exception handlers
-void __cs3_isr_irq(void) __attribute__((interrupt));
-void __cs3_reset(void) __attribute__((interrupt));
-void __cs3_isr_undef(void) __attribute__((interrupt));
-void __cs3_isr_swi(void) __attribute__((interrupt));
-void __cs3_isr_pabort(void) __attribute__((interrupt));
-void __cs3_isr_dabort(void) __attribute__((interrupt));
-void __cs3_isr_fiq(void) __attribute__((interrupt));
-
-// Function prototypes for initializing and configuring exceptions
-void set_A9_IRQ_stack(void);
-void disable_A9_interrupts(void);
-void enable_A9_interrupts(void);
-void config_GIC(void);
-void config_interrupt(int N, int CPU_target);
+void hps_timer_ISR(void);
 
 #endif // EXCEPTIONS_H

@@ -97,7 +97,7 @@ void Leds_toggle(uint32_t maskleds){
 
 bool Key_read(int key_number){
     
-    return (PIO0_REG(REG_BASE) & (1 << key_number)) == 0;
+    return (PIO0_REG(REG_BASE) & (1 << (key_number + KEYS_OFFSET))) == 0;
 }
 
 void Seg7_write(int seg7_number, uint32_t value){
