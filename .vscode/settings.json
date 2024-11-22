@@ -1,3 +1,8 @@
 {
-    "C_Cpp.default.compilerPath": ""
+    "C_Cpp.default.compilerPath": "",
+    "files.associations": {
+        "app_timer_irq.h": "c",
+        "pio_function.h": "c",
+        "axi_lw.h": "c"
+    }
 }

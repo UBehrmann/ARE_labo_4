@@ -41,28 +41,17 @@
  * 3. provides code that initializes the generic interrupt controller
  */
 
-static uint32_t ticks = 0;
-
-// Define ticks for 100ms with 25MHz clock
-#define Ticks_100ms 2500000
+bool timerGo = 0;
 
 void hps_timer_ISR(void)
 {
-	static int lastLEDISR = 0;
+	timerGo = 1;
 
-	ticks++;
+	// Read the register to clear the interrupt
+	volatile int dummy = OSC1_LW_REG(EOI);
 
-	if (ticks == Ticks_100ms)
-	{
-
-		lastLEDISR ^= (1 << 7);
-
-		Leds_write(lastLEDISR);
-
-		ticks = 0;
-
-		go = 1;
-	}
+	// To not have a warning
+	(void)dummy;
 }
 
 // Define the IRQ exception handler
@@ -160,7 +149,7 @@ void config_GIC(void)
 
 	// Set Interrupt Priority Mask Register (ICCPMR). Enable interrupts of all
 	// priorities
-	*((int *)0xFFFEC104) = 0xFF;
+	*((int *)0xFFFEC104) = 0xFFFF;
 
 	// Set CPU Interface Control Register (ICCICR). Enable signaling of
 	// interrupts
@@ -197,4 +186,21 @@ void config_interrupt(int N, int CPU_target)
 	/* Now that we know the register address and value, write to (only) the
 	 * appropriate byte */
 	*(char *)address = (char)CPU_target;
+}
+
+void config_timer(void)
+{
+	OSC1_LW_REG(control) = 0x2;
+
+	OSC1_LW_REG(loadcount) = Ticks_100ms;
+}
+
+void start_timer(void)
+{
+	OSC1_LW_REG(control) = 0x3;
+}
+
+void stop_timer(void)
+{
+	OSC1_LW_REG(control) = 0x2;
 }

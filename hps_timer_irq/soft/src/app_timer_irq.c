@@ -26,18 +26,20 @@
 
 #include <stdio.h>
 #include "axi_lw.h"
-#include "exceptions.h"
 #include "pio_function.h"
+
+#include "exceptions.h"
+
+extern bool timerGo;
 
 int __auto_semihosting;
 
-static uint32_t timer = 0;
-static bool timerActive = 0;
-
-static int lastLED = 0x0;
-
 int main(void)
 {
+
+    uint32_t timer = 0;
+    uint32_t lastLED = 0;
+    uint32_t ledAtStart = 0;
 
     disable_A9_interrupts();
 
@@ -45,6 +47,8 @@ int main(void)
 
     // Configure the timer
     config_GIC();
+
+    config_timer();
 
     // Initialisation des PIO
     Leds_init();
@@ -63,7 +67,7 @@ int main(void)
     {
         // Read the switches 7-0
         uint32_t switches = Switchs_read() & 0xFF;
-        uint32_t leds = 0x0;
+        uint32_t leds = 0;
 
         // Read the keys
         bool key0 = Key_read(0);
@@ -73,34 +77,39 @@ int main(void)
         // Start the timer
         if (key0)
         {
-            timerActive = 1;
+            start_timer();
+
+            // Set led 8
+            lastLED |= (1 << 8);
         }
 
         // Stop the timer
         if (key1)
         {
-            timerActive = 0;
+            stop_timer();
+
+            // Remove led 8
+            lastLED &= ~(1 << 8);
         }
 
-        if(timerActive){
-            leds |= (1 << 8);
-        }
-
-        if (timerActive && timer > 0 && go)
+        if (timerGo && timer > 0)
         {
-            go = 0;
+            timer--;
+            timerGo = 0;
 
             lastLED ^= (1 << 9);
-            leds |= lastLED;
-
-            timer--;
         }
+
+        leds |= lastLED;
 
         // Set start value
         if (key2)
         {
             timer = switches * 10;
+            ledAtStart = switches;
         }
+
+        leds |= ledAtStart;
 
         Leds_write(leds);
 
