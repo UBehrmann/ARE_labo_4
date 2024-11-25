@@ -20,7 +20,7 @@
  * Modifications :
  * Ver    Date        Student      Comments
  * 0.0    27.10.2022  ACS           Initial version.
- *
+ * 1.0    25.11.2024  UBN           Final version.
  *****************************************************************************************/
 #include "app_timer_irq.h"
 
@@ -38,14 +38,11 @@ int main(void)
 {
 
     uint32_t timer = 0;
-    uint32_t lastLED = 0;
-    uint32_t ledAtStart = 0;
 
     disable_A9_interrupts();
 
     set_A9_IRQ_stack();
 
-    // Configure the timer
     config_GIC();
 
     config_timer();
@@ -67,29 +64,23 @@ int main(void)
     {
         // Read the switches 7-0
         uint32_t switches = Switchs_read() & 0xFF;
-        uint32_t leds = 0;
-
-        // Read the keys
-        bool key0 = Key_read(0);
-        bool key1 = Key_read(1);
-        bool key2 = Key_read(2);
 
         // Start the timer
-        if (key0)
+        if (Key_read(0))
         {
             start_timer();
 
             // Set led 8
-            lastLED |= (1 << 8);
+            Leds_set(1 << 8);
         }
 
         // Stop the timer
-        if (key1)
+        if (Key_read(1))
         {
             stop_timer();
 
             // Remove led 8
-            lastLED &= ~(1 << 8);
+            Leds_clear(1 << 8);
         }
 
         if (timerGo && timer > 0)
@@ -97,21 +88,16 @@ int main(void)
             timer--;
             timerGo = 0;
 
-            lastLED ^= (1 << 9);
+            Leds_toggle(1 << 9);
         }
-
-        leds |= lastLED;
 
         // Set start value
-        if (key2)
+        if (Key_read(2))
         {
             timer = switches * 10;
-            ledAtStart = switches;
+            Leds_clear(0xFF);
+            Leds_set(switches);
         }
-
-        leds |= ledAtStart;
-
-        Leds_write(leds);
 
         // Show the timer value on the 7-segments display
         Seg7_write_hex(0, timer % 10);

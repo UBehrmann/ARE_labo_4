@@ -20,7 +20,7 @@
  * Modifications :
  * Ver    Date        Student      Comments
  * 0.0    15.11.2024  UBN          Initial version.
- *
+ * 1.0    25.11.2024  UBN           Final version.
  *****************************************************************************************/
 
 #ifndef EXCEPTIONS_H
@@ -53,13 +53,47 @@ void __cs3_isr_dabort(void) __attribute__((interrupt));
 void __cs3_isr_fiq(void) __attribute__((interrupt));
 
 // Function prototypes for initializing and configuring exceptions
+
+/*
+ * Initialize the banked stack pointer register for IRQ mode
+ */
 void set_A9_IRQ_stack(void);
+
+/*
+ * Turn off interrupts in the ARM processor
+ */
 void disable_A9_interrupts(void);
+
+/*
+ * Turn on interrupts in the ARM processor
+ */
 void enable_A9_interrupts(void);
+
+/*
+ * Configure the Generic Interrupt Controller (GIC)
+ */
 void config_GIC(void);
+
+/*
+ * Configure Set Enable Registers (ICDISERn) and Interrupt Processor Target
+ * Registers (ICDIPTRn). The default (reset) values are used for other registers
+ * in the GIC.
+ */
 void config_interrupt(int N, int CPU_target);
+
+/*
+ * Configure the timer
+ */
 void config_timer(void);
+
+/*
+ * Start the timer
+ */
 void start_timer(void);
+
+/*
+ * Stop the timer
+ */
 void stop_timer(void);
 
 #endif // EXCEPTIONS_H

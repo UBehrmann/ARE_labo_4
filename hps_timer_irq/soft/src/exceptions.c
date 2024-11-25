@@ -22,7 +22,7 @@
  * Modifications :
  * Ver    Date        Engineer      Comments
  * 0.0    27.10.2022  ACS           Initial version.
- *
+ * 1.0    25.11.2024  UBN           Final version.
  *****************************************************************************************/
 #include "exceptions.h"
 
@@ -43,6 +43,9 @@
 
 bool timerGo = 0;
 
+/*
+ * Define the IRQ exception handler
+ */
 void hps_timer_ISR(void)
 {
 	timerGo = 1;
@@ -107,9 +110,6 @@ void __attribute__((interrupt)) __cs3_isr_fiq(void)
 		;
 }
 
-/*
- * Initialize the banked stack pointer register for IRQ mode
- */
 void set_A9_IRQ_stack(void)
 {
 	uint32_t stack, mode;
@@ -131,18 +131,12 @@ void disable_A9_interrupts(void)
 	asm("msr cpsr, %[ps]" : : [ps] "r"(status));
 }
 
-/*
- * Turn on interrupts in the ARM processor
- */
 void enable_A9_interrupts(void)
 {
 	uint32_t status = SVC_MODE | INT_ENABLE;
 	asm("msr cpsr, %[ps]" : : [ps] "r"(status));
 }
 
-/*
- * Configure the Generic Interrupt Controller (GIC)
- */
 void config_GIC(void)
 {
 	config_interrupt(201, CPU0);
@@ -160,11 +154,6 @@ void config_GIC(void)
 	*((int *)0xFFFED000) = 1;
 }
 
-/*
- * Configure Set Enable Registers (ICDISERn) and Interrupt Processor Target
- * Registers (ICDIPTRn). The default (reset) values are used for other registers
- * in the GIC.
- */
 void config_interrupt(int N, int CPU_target)
 {
 	int reg_offset, index, value, address;

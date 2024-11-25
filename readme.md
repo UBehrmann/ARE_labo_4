@@ -106,6 +106,6 @@ timer_osc1_1_IRQ This interrupt combines: TIMINT1 and TIMINT2.
 
 ## Conditions
 
-- [ ] chaque 100ms l'affichage est mis à jour
+- [x] chaque 100ms l'affichage est mis à jour
 - [x] L'état de la LED8 montre si le minuteur est actif ou non
-- [ ] Chaque 100ms, la LED9 est inversée
+- [x] Chaque 100ms, la LED9 est inversée
