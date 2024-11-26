@@ -64,7 +64,7 @@ void __attribute__((interrupt)) __cs3_isr_irq(void)
 	int interrupt_ID = *((int *)0xFFFEC10C) & 0x3FF;
 
 	// Handle the interrupt if it comes from the timer
-	if (interrupt_ID == 201)
+	if (interrupt_ID == TIMER_OSC1_O_IRQ)
 	{
 		hps_timer_ISR();
 	}
@@ -143,15 +143,15 @@ void config_GIC(void)
 
 	// Set Interrupt Priority Mask Register (ICCPMR). Enable interrupts of all
 	// priorities
-	*((int *)0xFFFEC104) = 0xFFFF;
+	*((int *)ICCPMR) = 0xFFFF;
 
 	// Set CPU Interface Control Register (ICCICR). Enable signaling of
 	// interrupts
-	*((int *)0xFFFEC100) = 1;
+	*((int *)ICCICR) = 1;
 
 	// Configure the Distributor Control Register (ICDDCR) to send pending
 	// interrupts to CPUs
-	*((int *)0xFFFED000) = 1;
+	*((int *)ICDDCR) = 1;
 }
 
 void config_interrupt(int N, int CPU_target)
@@ -179,17 +179,17 @@ void config_interrupt(int N, int CPU_target)
 
 void config_timer(void)
 {
-	OSC1_LW_REG(control) = 0x2;
+	OSC1_LW_REG(CONTROL) = TIMER1_MODE;
 
-	OSC1_LW_REG(loadcount) = Ticks_100ms;
+	OSC1_LW_REG(LOADCOUNT) = Ticks_100ms;
 }
 
 void start_timer(void)
 {
-	OSC1_LW_REG(control) = 0x3;
+	OSC1_LW_REG(CONTROL) = TIMER1_ENABLE | TIMER1_MODE ;
 }
 
 void stop_timer(void)
 {
-	OSC1_LW_REG(control) = 0x2;
+	OSC1_LW_REG(CONTROL) = TIMER1_MODE;
 }

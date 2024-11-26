@@ -33,10 +33,20 @@ extern bool timerGo;
 
 #define osc1timer0base 0xFFD00000
 
-#define loadcount 0x00
-#define currentvalue 0x04
-#define control 0x08
+#define LOADCOUNT 0x00
+#define CURRENT_VALUE 0x04
+#define CONTROL 0x08
 #define EOI 0x0C
+
+#define TIMER_OSC1_O_IRQ 201
+#define ICCPMR 0xFFFEC104
+#define ICCICR 0xFFFEC100
+#define ICDDCR 0xFFFED000
+
+// timer1controlreg bit masks
+#define TIMER1_ENABLE 0x01
+#define TIMER1_MODE 0x02
+#define TIMER1_INT 0x04
 
 #define OSC1_LW_REG(_x_) *(volatile uint32_t *)(osc1timer0base + _x_) // _x_ is an offset with respect to the base address
 
